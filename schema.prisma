@@ -1,0 +1,25 @@
+// ユーザー関連
+
+model User {
+    id            String    @id @default(cuid())
+    name          String?
+    email         String?   @unique
+    emailVerified DateTime?
+    image         String?
+    studentId     String?  // 学籍番号
+    accounts      Account[]
+    sessions      Session[]
+    posts         Post[]
+    bookmarks     Bookmark[] @relation("UserBookmarks")
+    bookmarkedBy  Bookmark[] @relation("TargetBookmarks")
+}
+
+model Bookmark {
+    id        String @id @default(cuid())
+    userId    String
+    user      User   @relation("UserBookmarks", fields: [userId], references: [id])
+    targetId  String
+    target    User   @relation("TargetBookmarks", fields: [targetId], references: [id])
+
+    @@unique([userId, targetId])
+}
