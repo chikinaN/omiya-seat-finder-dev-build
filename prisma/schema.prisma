@@ -7,29 +7,25 @@ generator client {
 
 datasource db {
     provider = "postgresql"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
     url      = env("DATABASE_URL")
 }
 
 // Necessary for Next auth
 model Account {
-    id                  String  @id @default(cuid())
-    userId              String
-    type                String
-    provider            String
-    providerAccountId   String
-    refreshToken        String? // @db.Text
-    accessToken         String? // @db.Text
-    expiresAt           Int?
-    tokenType           String?
-    scope               String?
-    idToken             String? // @db.Text
-    sessionState        String?
-    user                User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-    refreshTokenExpiresIn Int?
+    id                       String  @id @default(cuid())
+    userId                   String
+    type                     String
+    provider                 String
+    providerAccountId        String
+    refresh_token            String? @db.Text
+    access_token             String? // @db.Text
+    expires_at               Int?
+    token_type               String?
+    scope                    String?
+    id_token                 String? // @db.Text
+    session_state            String?
+    user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    refresh_token_expires_in Int?
 
     @@unique([provider, providerAccountId])
 }
@@ -55,22 +51,24 @@ model VerificationToken {
 model Location {
     id              String @id @default(cuid())
     label           String
-    name            String
     capacity        Int
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 
-    schedules       Schedule[]
+    weeklySchedules WeeklySchedule[]
+    exceptionalSchedules ExceptionalSchedule[]
 }
 
 model Course {
     id              String @id @default(cuid())
     name            String
     description     String
+    themeColor      String
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 
-    schedules Schedule[]
+    weeklySchedules WeeklySchedule[]
+    exceptionalSchedules ExceptionalSchedule[]
 }
 
 model TimeSlot {
@@ -81,10 +79,27 @@ model TimeSlot {
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 
-    schedules Schedule[]
+    weeklySchedules WeeklySchedule[]
+    exceptionalSchedules ExceptionalSchedule[]
 }
 
-model Schedule {
+model WeeklySchedule {
+    id              String @id @default(cuid())
+    locationId      String
+    courseId        String
+    timeSlotId      String
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+    dayOfWeek       Int
+
+    location Location @relation(fields: [locationId], references: [id])
+    course Course @relation(fields: [courseId], references: [id])
+    timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
+
+    userSchedules   UserSchedule[]
+}
+
+model ExceptionalSchedule {
     id              String @id @default(cuid())
     locationId      String
     courseId        String
@@ -96,8 +111,6 @@ model Schedule {
     location Location @relation(fields: [locationId], references: [id])
     course Course @relation(fields: [courseId], references: [id])
     timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
-
-    userSchedules   UserSchedule[]
 }
 
 // ユーザー関連
@@ -125,7 +138,7 @@ model UserSchedule {
     updatedAt       DateTime @updatedAt
 
     user User @relation(fields: [userId], references: [id])
-    schedule Schedule @relation(fields: [scheduleId], references: [id])
+    schedule WeeklySchedule @relation(fields: [scheduleId], references: [id])
 }
 
 model Bookmark {
@@ -139,4 +152,14 @@ model Bookmark {
     target User @relation("target", fields: [targetId], references: [id])
 
     @@unique([userId, targetId])
+}
+
+// 通知関連
+
+model GloabalNotification {
+    id              String @id @default(cuid())
+    title           String
+    body            String
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
 }

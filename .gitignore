@@ -49,3 +49,6 @@ yarn-error.log*
 .history/
 .vscode/
 start-database.sh
+
+/prisma/*
+!/prisma/schema.prisma
