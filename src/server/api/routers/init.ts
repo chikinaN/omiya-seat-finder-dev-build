@@ -1,10 +1,9 @@
 import {
   createTRPCRouter,
-  adminProcedure,
   protectedProcedure,
 } from "~/server/api/trpc";
 import dayjs from 'dayjs';
-import { WeeklySchedule } from "@prisma/client";
+import type { WeeklySchedule } from "@prisma/client";
 
 /**
  * 初期設定のデータを格納するようのエンドポイント
@@ -20,30 +19,30 @@ type ScheduleType = {
 export const InitRouter = createTRPCRouter({
   setInitSchedule: protectedProcedure
     .mutation(async ({ ctx }) => {
-      const locationType1 = await ctx.db.locationType.create({
-        data: {
-          label: "4席+2椅子",
-          capacity: 6,
-        }
-      })
-      const locationType2 = await ctx.db.locationType.create({
-        data: {
-          label: "六角机",
-          capacity: 3,
-        }
-      })
+      // const locationType1 = await ctx.db.locationType.create({
+      //   data: {
+      //     label: "4席+2椅子",
+      //     capacity: 6,
+      //   }
+      // })
+      // const locationType2 = await ctx.db.locationType.create({
+      //   data: {
+      //     label: "六角机",
+      //     capacity: 3,
+      //   }
+      // })
       const locationType3 = await ctx.db.locationType.create({
         data: {
           label: "6席",
           capacity: 6,
         }
       })
-      const locationType4 = await ctx.db.locationType.create({
-        data: {
-          label: "4席",
-          capacity: 4,
-        }
-      })
+      // const locationType4 = await ctx.db.locationType.create({
+      //   data: {
+      //     label: "4席",
+      //     capacity: 4,
+      //   }
+      // })
       // const location1_1 = await ctx.db.location.create({
       //   data: {
       //     label: "1-1",
@@ -368,12 +367,12 @@ export const InitRouter = createTRPCRouter({
           locationTypeId: locationType3.id,
         }
       })
-      const location7 = await ctx.db.location.create({
-        data: {
-          label: "面談室1",
-          locationTypeId: locationType3.id,
-        }
-      })
+      // const location7 = await ctx.db.location.create({
+      //   data: {
+      //     label: "面談室1",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
       const location8 = await ctx.db.location.create({
         data: {
           label: "面談室2",
@@ -480,13 +479,13 @@ export const InitRouter = createTRPCRouter({
           themeColor: "#FFFFFF"
         }
       })
-      const corse7 = await ctx.db.course.create({
-        data: {
-          name: "進路授業(3年生)",
-          description: "進路授業です",
-          themeColor: "#FFFFFF"
-        }
-      })
+      // const corse7 = await ctx.db.course.create({
+      //   data: {
+      //     name: "進路授業(3年生)",
+      //     description: "進路授業です",
+      //     themeColor: "#FFFFFF"
+      //   }
+      // })
       const corse8 = await ctx.db.course.create({
         data: {
           name: "リベラルアーツ基礎(人文科学)",
@@ -1242,6 +1241,6 @@ export const InitRouter = createTRPCRouter({
             dayOfWeek: 5
           },
         ]
-        postSchedule(scheduleData)
+        await postSchedule(scheduleData)
     })
 })

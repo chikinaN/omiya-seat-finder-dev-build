@@ -4,7 +4,6 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
-import { studentIdRegex } from "~/types/student";
 
 export const ScheduleRouter = createTRPCRouter({
   getUserSchedule: protectedProcedure
@@ -23,7 +22,7 @@ export const ScheduleRouter = createTRPCRouter({
     }),
   getDefaultSchedule: protectedProcedure
     .input(z.object({ schoolDays: z.union([z.literal(1), z.literal(3), z.literal(5)]) }))
-    .query(async ({ ctx, input }) => {
+    .query(async ({ ctx }) => {
       const dayOfweeks = [1, 3, 5]
       const corses = []
       for (const dayOfWeek of dayOfweeks) {
@@ -66,22 +65,22 @@ export const ScheduleRouter = createTRPCRouter({
         throw new Error("user not found")
       }
       const userSchedules = []
-      for (const data in input) {
+      for (const data of input) {
         const course = await ctx.db.course.findFirst({
-          where: { name: input[data]?.course }
+          where: { name: data.course }
         })
         if (!course) {
           throw new Error("course not found")
         }
         const timeSlot = await ctx.db.timeSlot.findFirst({
-          where: { label: `${input[data]?.timeSlot}限` }
+          where: { label: `${data.timeSlot}限` }
         })
         if (!timeSlot) {
           throw new Error("timeSlot not found")
         }
         const schedule = await ctx.db.weeklySchedule.findFirst({
           where: {
-            dayOfWeek: input[data]?.dayOfWeek,
+            dayOfWeek: data.dayOfWeek,
             timeSlotId: timeSlot.id,
             courseId: course.id
           }

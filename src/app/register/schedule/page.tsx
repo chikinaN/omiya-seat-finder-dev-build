@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
 import { postSchedule } from "./postSchedule";
-import { studentIdRegex } from "~/types/student";
 
 export default async function Home() {
   const session = await auth();

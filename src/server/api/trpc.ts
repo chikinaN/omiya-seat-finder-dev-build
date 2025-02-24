@@ -131,23 +131,23 @@ export const protectedProcedure = t.procedure
     });
   });
 
-export const adminProcedure = t.procedure
-  .use(timingMiddleware)
-  .use(({ ctx, next }) => {
-    if (!ctx.session || !ctx.session.user) {
-      console.log('no session')
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    const admin = ctx.db.adminUser.findFirst({
-      where: { id: ctx.session.user.id },
-    })
-    if (!admin) {
-      console.log('not admin')
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-    return next({
-      ctx: {
-        session: { ...ctx.session, user: ctx.session.user },
-      },
-    });
-  })
+// export const adminProcedure = t.procedure
+//   .use(timingMiddleware)
+//   .use(({ ctx, next }) => {
+//     if (!ctx.session || !ctx.session.user) {
+//       console.log('no session')
+//       throw new TRPCError({ code: "UNAUTHORIZED" });
+//     }
+//     const admin = ctx.db.adminUser.findFirst({
+//       where: { id: ctx.session.user.id },
+//     })
+//     if (!admin) {
+//       console.log('not admin')
+//       throw new TRPCError({ code: "UNAUTHORIZED" });
+//     }
+//     return next({
+//       ctx: {
+//         session: { ...ctx.session, user: ctx.session.user },
+//       },
+//     });
+//   })

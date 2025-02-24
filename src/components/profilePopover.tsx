@@ -3,7 +3,7 @@ import Image from "next/image";
 import { User } from "lucide-react"
 import { auth } from "~/server/auth";
 import { Popover } from "./popiver";
-import { Session } from "next-auth";
+import type { Session } from "next-auth";
 
 export async function ProfilePopover() {
 	const session = await auth();
