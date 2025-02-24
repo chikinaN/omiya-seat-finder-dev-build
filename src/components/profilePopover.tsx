@@ -20,20 +20,18 @@ export async function ProfilePopover() {
 				<nav>
 					{session && (
 						<>
-							<Link href="/mypage" className="block hover:bg-gray-100 px-2 py-1 rounded">
+							<div className="block hover:bg-gray-100 px-2 py-1 rounded">
+								<p className="text-sm px-2 pt-1">{session.user?.name}</p>
+								<p className="text-xs px-2 py-1 text-gray-500">{session.user?.email}</p>
+							</div>
+							<Link href="/dashboard" className="block hover:bg-gray-100 px-2 py-1 rounded">
 								ダッシュボード
-							</Link>
-							<Link href="/mypage/entry" className="block hover:bg-gray-100 px-2 py-1 rounded">
-								座席登録
-							</Link>
-							<Link href="/mypage/share" className="block hover:bg-gray-100 px-2 py-1 rounded">
-								座席共有
 							</Link>
 							<Link href="/notice" className="block hover:bg-gray-100 px-2 py-1 rounded">
 								お知らせ
 							</Link>
 							<Link href="/seats" className="block hover:bg-gray-100 px-2 py-1 rounded">
-								座席管理
+								座席確認
 							</Link>
 							<hr className="my-2" />
 						</>

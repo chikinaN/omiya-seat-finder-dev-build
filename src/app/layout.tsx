@@ -17,17 +17,14 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ja" className={`${GeistSans.variable}`}>
-      <body>
+      <body className="w-screen h-screen">
         <TRPCReactProvider>
-          <header className="border-b">
+          <header className="border-b fixed w-screen bg-white top-0">
             <div className="container mx-auto px-4">
               <MainNav />
             </div>
           </header>
-          <main className="flex-grow container mx-auto px-4 py-8">{children}</main>
-          <footer className="border-t py-4">
-            <div className="container mx-auto px-4 text-center text-sm text-gray-600">© 2024 座席表管理システム</div>
-          </footer>
+          <main className="w-full h-full box-border pt-16">{children}</main>
         </TRPCReactProvider>
       </body>
     </html>

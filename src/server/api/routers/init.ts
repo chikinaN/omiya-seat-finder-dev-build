@@ -1,70 +1,394 @@
 import {
   createTRPCRouter,
-  publicProcedure,
+  adminProcedure,
+  protectedProcedure,
 } from "~/server/api/trpc";
 import dayjs from 'dayjs';
+import { WeeklySchedule } from "@prisma/client";
 
 /**
  * 初期設定のデータを格納するようのエンドポイント
  */
 
+type ScheduleType = {
+  locationId: string;
+  timeSlotId: string;
+  courseId: string;
+  dayOfWeek: number;
+}
+
 export const InitRouter = createTRPCRouter({
-  setInitSchedule: publicProcedure
+  setInitSchedule: protectedProcedure
     .mutation(async ({ ctx }) => {
+      const locationType1 = await ctx.db.locationType.create({
+        data: {
+          label: "4席+2椅子",
+          capacity: 6,
+        }
+      })
+      const locationType2 = await ctx.db.locationType.create({
+        data: {
+          label: "六角机",
+          capacity: 3,
+        }
+      })
+      const locationType3 = await ctx.db.locationType.create({
+        data: {
+          label: "6席",
+          capacity: 6,
+        }
+      })
+      const locationType4 = await ctx.db.locationType.create({
+        data: {
+          label: "4席",
+          capacity: 4,
+        }
+      })
+      // const location1_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-1",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_2 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-2",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_3 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-3",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_4 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-4",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_5 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-5",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_6 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-6",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_7 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-7",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_8 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-8",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_9 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-9",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location1_10 = await ctx.db.location.create({
+      //   data: {
+      //     label: "1-10",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const lcoation2_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-1",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_2 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-2",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_3 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-3",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_4 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-4",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const lcoation2_5 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-5",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_6 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-6",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_7 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-7",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_8 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-8",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_9 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-9",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const lcoation2_10 = await ctx.db.location.create({
+      //   data: {
+      //     label: "2-10",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location3_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-1",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location3_2 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-2",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location3_3 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-3",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location3_4 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-4",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location3_5 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-5",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location3_6 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-6",
+      //     locationTypeId: locationType1.id,
+      //   }
+      // })
+      // const location3_7 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-7",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location3_8 = await ctx.db.location.create({
+      //   data: {
+      //     label: "3-8",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location4_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "4-1",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location4_2 = await ctx.db.location.create({
+      //   data: {
+      //     label: "4-2",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location4_3 = await ctx.db.location.create({
+      //   data: {
+      //     label: "4-3",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location4_4 = await ctx.db.location.create({
+      //   data: {
+      //     label: "4-4",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location4_5 = await ctx.db.location.create({
+      //   data: {
+      //     label: "4-5",
+      //     locationTypeId: locationType2.id,
+      //   }
+      // })
+      // const location5_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー1",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_2 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー2",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_3 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー3",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_4 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー4",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_5 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー5",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_6 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー6",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_7 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー7",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_8 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー8",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_9 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー9",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location5_10 = await ctx.db.location.create({
+      //   data: {
+      //     label: "マーキュリー10",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location6_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "6階メイン",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location7_1 = await ctx.db.location.create({
+      //   data: {
+      //     label: "6階小部屋1",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
+      // const location8 = await ctx.db.location.create({
+      //   data: {
+      //     label: "面談室1",
+      //     locationTypeId: locationType4.id,
+      //   }
+      // })
+      // const location9 = await ctx.db.location.create({
+      //   data: {
+      //     label: "面談室2",
+      //     locationTypeId: locationType4.id,
+      //   }
+      // })
+      // const location10 = await ctx.db.location.create({
+      //   data: {
+      //     label: "面談室3",
+      //     locationTypeId: locationType3.id,
+      //   }
+      // })
       const location1 = await ctx.db.location.create({
         data: {
-          label: "8階メイン左",
-          capacity: 54,
+          label: "8階左",
+          locationTypeId: locationType3.id,
         }
       })
       const location2 = await ctx.db.location.create({
         data: {
-          label: "8階メイン中央",
-          capacity: 54,
+          label: "8階中央",
+          locationTypeId: locationType3.id,
         }
       })
       const location3 = await ctx.db.location.create({
         data: {
-          label: "8階メイン右",
-          capacity: 54,
+          label: "8階右",
+          locationTypeId: locationType3.id,
         }
       })
       const location4 = await ctx.db.location.create({
         data: {
           label: "マーキュリー",
-          capacity: 60,
+          locationTypeId: locationType3.id,
         }
       })
       const location5 = await ctx.db.location.create({
         data: {
           label: "6階メイン",
-          capacity: 54,
+          locationTypeId: locationType3.id,
         }
       })
       const location6 = await ctx.db.location.create({
         data: {
           label: "6階小部屋",
-          capacity: 30,
+          locationTypeId: locationType3.id,
         }
       })
       const location7 = await ctx.db.location.create({
         data: {
           label: "面談室1",
-          capacity: 4,
+          locationTypeId: locationType3.id,
         }
       })
       const location8 = await ctx.db.location.create({
         data: {
           label: "面談室2",
-          capacity: 4,
+          locationTypeId: locationType3.id,
         }
       })
       const location9 = await ctx.db.location.create({
         data: {
           label: "面談室3",
-          capacity: 8,
+          locationTypeId: locationType3.id,
         }
       })
+
+
+
       const timeSlot1 = await ctx.db.timeSlot.create({
         data: {
           label: "1限",
@@ -275,9 +599,43 @@ export const InitRouter = createTRPCRouter({
           themeColor: "#FFFFFF"
         }
       })
+      
+      // 月曜1限
+      // const schedule1_1_1 = await ctx.db.weeklySchedule.create()
+      async function postSchedule(schedules: ScheduleType[]) {
+        const ScheduleColumns: WeeklySchedule[] = []
+        for (const schedule of schedules) {
+          if (!ScheduleColumns.some((column) => column.timeSlotId === schedule.timeSlotId && column.dayOfWeek === schedule.dayOfWeek)) {
+            const weeklySchedule = await ctx.db.weeklySchedule.create({
+              data: {
+                courseId: schedule.courseId,
+                timeSlotId: schedule.timeSlotId,
+                dayOfWeek: schedule.dayOfWeek,
+              }
+            })
+            ScheduleColumns.push(weeklySchedule)
+            await ctx.db.locationOnSchedule.create({
+              data: {
+                locationId: schedule.locationId,
+                scheduleId: weeklySchedule.id
+              }
+            })
+          } else {
+            const column = ScheduleColumns.find((column) => column.timeSlotId === schedule.timeSlotId && column.dayOfWeek === schedule.dayOfWeek)
+            if (!column) {
+              return;
+            }
+            await ctx.db.locationOnSchedule.create({
+              data: {
+                locationId: schedule.locationId,
+                scheduleId: column.id
+              }
+            })
+          }
+        }
+      }
 
-      await ctx.db.weeklySchedule.createMany({
-        data: [
+      const scheduleData: ScheduleType[] = [
           // 月曜1限
           {
             locationId: location1.id,
@@ -828,16 +1186,10 @@ export const InitRouter = createTRPCRouter({
           {
             locationId: location4.id,
             timeSlotId: timeSlot4.id,
-            courseId: corse22.id,
+            courseId: corse10.id,
             dayOfWeek: 5
           },
-          {
-            locationId: location8.id,
-            timeSlotId: timeSlot4.id,
-            courseId: corse23.id,
-            dayOfWeek: 5
-          },
-          
+
           // 金曜5限
           {
             locationId: location1.id,
@@ -857,7 +1209,39 @@ export const InitRouter = createTRPCRouter({
             courseId: corse2.id,
             dayOfWeek: 5
           },
+          {
+            locationId: location4.id,
+            timeSlotId: timeSlot5.id,
+            courseId: corse22.id,
+            dayOfWeek: 5
+          },
+          {
+            locationId: location8.id,
+            timeSlotId: timeSlot5.id,
+            courseId: corse23.id,
+            dayOfWeek: 5
+          },
+          
+          // 金曜6限
+          {
+            locationId: location1.id,
+            timeSlotId: timeSlot6.id,
+            courseId: corse2.id,
+            dayOfWeek: 5
+          },
+          {
+            locationId: location2.id,
+            timeSlotId: timeSlot6.id,
+            courseId: corse2.id,
+            dayOfWeek: 5
+          },
+          {
+            locationId: location3.id,
+            timeSlotId: timeSlot6.id,
+            courseId: corse2.id,
+            dayOfWeek: 5
+          },
         ]
-      });
+        postSchedule(scheduleData)
     })
 })

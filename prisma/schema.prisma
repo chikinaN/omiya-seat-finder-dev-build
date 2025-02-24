@@ -51,12 +51,24 @@ model VerificationToken {
 model Location {
     id              String @id @default(cuid())
     label           String
+    locationTypeId  String
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    locationOnSchedule LocationOnSchedule[]
+    exceptionalSchedules ExceptionalSchedule[]
+
+    locationType LocationType @relation(fields: [locationTypeId], references: [id])
+}
+
+model LocationType {
+    id              String @id @default(cuid())
+    label           String
     capacity        Int
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
 
-    weeklySchedules WeeklySchedule[]
-    exceptionalSchedules ExceptionalSchedule[]
+    locations       Location[]
 }
 
 model Course {
@@ -85,19 +97,31 @@ model TimeSlot {
 
 model WeeklySchedule {
     id              String @id @default(cuid())
-    locationId      String
     courseId        String
     timeSlotId      String
     createdAt       DateTime @default(now())
     updatedAt       DateTime @updatedAt
     dayOfWeek       Int
 
-    location Location @relation(fields: [locationId], references: [id])
     course Course @relation(fields: [courseId], references: [id])
     timeSlot TimeSlot @relation(fields: [timeSlotId], references: [id])
 
     userSchedules   UserSchedule[]
+    locations       LocationOnSchedule[]
+    overrideSchedules OverrideSchedule[]
 }
+
+model LocationOnSchedule {
+    id              String @id @default(cuid())
+    scheduleId      String
+    locationId      String
+
+    schedule WeeklySchedule @relation(fields: [scheduleId], references: [id])
+    location Location @relation(fields: [locationId], references: [id])
+
+    @@unique([scheduleId, locationId])
+}
+
 
 model ExceptionalSchedule {
     id              String @id @default(cuid())
@@ -126,11 +150,24 @@ model User {
     accounts        Account[]
     sessions        Session[]
     userSchedules   UserSchedule[]
+    overrideSchedules OverrideSchedule[]
+    adminUser       AdminUser[]
     bookmarks       Bookmark[] @relation("user")
     bookmarkedUsers Bookmark[] @relation("target")
 }
 
 model UserSchedule {
+    id              String @id @default(cuid())
+    userId          String
+    scheduleId      String
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id])
+    schedule WeeklySchedule @relation(fields: [scheduleId], references: [id])
+}
+
+model OverrideSchedule {
     id              String @id @default(cuid())
     userId          String
     scheduleId      String
@@ -152,6 +189,15 @@ model Bookmark {
     target User @relation("target", fields: [targetId], references: [id])
 
     @@unique([userId, targetId])
+}
+
+model AdminUser {
+    id              String @id @default(cuid())
+    userId          String
+    createdAt       DateTime @default(now())
+    updatedAt       DateTime @updatedAt
+
+    user User @relation(fields: [userId], references: [id])
 }
 
 // 通知関連

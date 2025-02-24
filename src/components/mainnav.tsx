@@ -14,8 +14,8 @@ export async function MainNav() {
       </div>
       <div className="flex items-center space-x-4">
         {session?.user && (
-          <Link href="/mypage">
-            <button className="bg-black text-white py-1.5 px-3 rounded">マイページへ</button>
+          <Link href="/dashboard">
+            <button className="bg-black text-white py-1.5 px-3 rounded">ダッシュボードへ</button>
           </Link>
         )}
         <NotificationPopover />

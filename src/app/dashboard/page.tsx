@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { auth } from "~/server/auth";
 import { api, HydrateClient } from "~/trpc/server";
+import { Sidebar } from "~/components/sidebar";
 
 export default async function Home() {
   const session = await auth();
@@ -14,8 +15,11 @@ export default async function Home() {
 
   return (
     <HydrateClient>
-      <main className="flex min-h-screen flex-col items-center justify-center">
-      </main>
+      <div className="grid h-full grid-cols-[15rem,1fr]">
+        <Sidebar />
+        <main className="flex-grow container mx-auto px-4 py-8">
+        </main>
+      </div>
     </HydrateClient>
   );
 }

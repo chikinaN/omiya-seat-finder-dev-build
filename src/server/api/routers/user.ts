@@ -5,6 +5,7 @@ import {
   protectedProcedure,
   publicProcedure,
 } from "~/server/api/trpc";
+import { studentIdRegex } from "~/types/student";
 
 export const UserRouter = createTRPCRouter({
   getUser: protectedProcedure
@@ -16,8 +17,32 @@ export const UserRouter = createTRPCRouter({
           userSchedules: true,
         }
       })
+      const mail = ctx.session.user.email;
+      if (!user || !mail) {
+        return null;
+      }
 
-      return user ?? null;
+      return user
+    }),
+  setStudentId: protectedProcedure
+    .input(z.object({ studentId: z
+      .string()
+      .length(10)
+      .regex(studentIdRegex, { message: "学籍番号としては正しくありません"})
+     }))
+    .mutation(async ({ input, ctx }) => {
+      const user = await ctx.db.user.findFirst({
+        where: { id: ctx.session.user.id },
+      })
+      if (!user) {
+        return null;
+      }
+      return await ctx.db.user.update({
+        where: { id: user.id },
+        data: {
+          studentId: input.studentId,
+        }
+      })
     }),
   getTargetUser: publicProcedure
     .input(z.object({ name: z.string().min(1) }))
@@ -31,7 +56,7 @@ export const UserRouter = createTRPCRouter({
             include: {
               schedule: {
                 include: {
-                  location: true
+                  locations: true,
                 }
               },
             }
@@ -40,6 +65,29 @@ export const UserRouter = createTRPCRouter({
       })
 
       return user ?? null;
+    }),
+  getBookmarks: protectedProcedure.
+    query(async ({ ctx }) => {
+      const user = await ctx.db.user.findFirst({
+        where: { id: ctx.session.user.id },
+        include: {
+          bookmarks: true,
+        }
+      })
+      if (!user) {
+        return [];
+      }
+      const bookmarks = []
+      for (const bookmark of user.bookmarks) {
+        const targetUser = await ctx.db.user.findFirst({
+          where: { id: bookmark.targetId },
+        })
+        if (targetUser) {
+          bookmarks.push(targetUser)
+        }
+      }
+
+      return bookmarks;
     }),
   setBookmark: protectedProcedure
     .input(z.object({ target: z.string().min(1) }))
