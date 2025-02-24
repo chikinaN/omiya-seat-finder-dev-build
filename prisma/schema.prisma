@@ -19,11 +19,11 @@ model Account {
     provider                 String
     providerAccountId        String
     refresh_token            String? @db.Text
-    access_token             String? // @db.Text
+    access_token             String?
     expires_at               Int?
     token_type               String?
     scope                    String?
-    id_token                 String? // @db.Text
+    id_token                 String?
     session_state            String?
     user                     User    @relation(fields: [userId], references: [id], onDelete: Cascade)
     refresh_token_expires_in Int?
